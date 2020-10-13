@@ -1,0 +1,17 @@
+version: "3"
+services:
+  react-education-week2:
+    build:
+      context: "."
+      dockerfile: "Dockerfile"
+    image: "react-education/week2"
+    container_name: "react-education-week2"
+    command: sh -c "yarn start"
+    ports:
+      - "4001:4001"
+    working_dir: "/code"
+    volumes:
+      - ./week2/src:/code/src
+    environment:
+      - LOCAL=1
+    stdin_open: true
