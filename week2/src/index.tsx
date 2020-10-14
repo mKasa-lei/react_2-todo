@@ -4,14 +4,15 @@ import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 
 type InputProps={
-  handleClick:()=>void
+  value:string
+  setText:React.Dispatch<React.SetStateAction<string>>
 }
-const Input:React.FC<InputProps> = () => {
+const Input:React.FC<InputProps> = (props) => {
   return (
     <li>
       <input type="text" onChange={
           (event: React.ChangeEvent<HTMLInputElement>) => {
-            props.handleClick(event.target.value)
+            props.setText(event.target.value)
       }
       } />
       <button>Add</button>
@@ -24,10 +25,11 @@ const Pagination = () => {
   )
 }
 type ToDoListProps={
-  text:string
+  list:string
+  setList:React.Dispatch<React.SetStateAction<string>>
 }
+
 const TodoList:React.FC<ToDoListProps> = (props) => {
-  const [list,SetList]=useState("fill");
     return (
         <Pagination />
     );
@@ -35,17 +37,22 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
 
 const Todo = () => { 
   const [text,setText]=useState<string>("")
-  const handleClick=()=>{
-    setText(String)
-  }
+  const [list,setList]=useState<string>("")
+
     return(
         <React.Fragment>
-            <Input />
-            <TodoList />
+            <Input
+            value={text}
+            setText={setText}
+            />
+
+            <TodoList
+            list={list}
+            setList={setList}
+            />
         </React.Fragment>
     )
 }
-
 
 ReactDOM.render(<Todo />, document.getElementById("root"));
 
