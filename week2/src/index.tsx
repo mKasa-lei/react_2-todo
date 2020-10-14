@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 import { toEditorSettings } from "typescript";
+import { clone } from "lodash";
 
 const Todo: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
@@ -17,9 +18,12 @@ const Todo: React.FC = () => {
   const changeTxt: Function = (e: any) => {
     setTodo(e.target.value);
   };
-  const toDelete: Function = (content: string) => {
-    setTodoList(todoList.filter((todoItem) => todoItem !== content));
+  const toDelete: Function = (i: number) => {
+    todoList.splice(i, 1);
+    const test = clone(todoList);
+    setTodoList(test);
   };
+
   const toEdit: Function = () => {
     setEditing(!editing);
   };
