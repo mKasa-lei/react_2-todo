@@ -1,45 +1,43 @@
-import React, { useRef,useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 
 type InputProps={
-  // listState:string|null
+  handleClick:()=>void
 }
-const Input:React.FC<InputProps> = (props) => {
-  const [textState,setTextState]=useState(String)
-
+const Input:React.FC<InputProps> = () => {
   return (
     <li>
       <input type="text" onChange={
           (event: React.ChangeEvent<HTMLInputElement>) => {
-            const textValue:string = String(event.target.value);
-            setTextState(textValue)
-            console.log(textState);
+            props.handleClick(event.target.value)
       }
       } />
       <button>Add</button>
     </li>
   )
 }
-
 const Pagination = () => {
   return(
     <div></div>
   )
 }
 type ToDoListProps={
-
+  text:string
 }
 const TodoList:React.FC<ToDoListProps> = (props) => {
-    // const [listState,setListState]=useState(String);
-
+  const [list,SetList]=useState("fill");
     return (
         <Pagination />
     );
 }
 
 const Todo = () => { 
+  const [text,setText]=useState<string>("")
+  const handleClick=()=>{
+    setText(String)
+  }
     return(
         <React.Fragment>
             <Input />
