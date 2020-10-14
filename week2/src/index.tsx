@@ -3,9 +3,11 @@ import ReactDOM from "react-dom";
 import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 import { toEditorSettings } from "typescript";
+import { clone } from "lodash";
 
 const Todo: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
+  const [editTodo, setEditTodo] = useState<string>("");
   const [todoList, setTodoList] = useState<Array<string>>(Array());
   const [editing, setEditing] = useState<boolean>(true);
   const toAdd: Function = (e: any) => {
@@ -17,11 +19,24 @@ const Todo: React.FC = () => {
   const changeTxt: Function = (e: any) => {
     setTodo(e.target.value);
   };
-  const toDelete: Function = (content: string) => {
-    setTodoList(todoList.filter((todoItem) => todoItem !== content));
+  const toDelete: Function = (i: number) => {
+    todoList.splice(i, 1);
+    const test = clone(todoList);
+    setTodoList(test);
   };
   const toEdit: Function = () => {
     setEditing(!editing);
+  };
+  const onReChange: Function = (e: any, i: number) => {
+    setEditTodo(e.target.value);
+    window.document.onkeydown = function (event) {
+      if (event.key === "Enter") {
+        todoList.splice(i, 1, editTodo);
+        const test = clone(todoList);
+        setTodoList(todoList);
+        setEditing(!editing);
+      }
+    };
   };
   return (
     <React.Fragment>
@@ -32,9 +47,11 @@ const Todo: React.FC = () => {
       />
       <TodoList
         todoList={todoList}
-        toDelete={(content: string) => toDelete(content)}
+        toDelete={(i: number) => toDelete(i)}
         editing={editing}
         toEdit={() => toEdit()}
+        onReChange={(e: any, i: number) => onReChange(e, i)}
+        editTodo={editTodo}
       />
     </React.Fragment>
   );
@@ -62,6 +79,8 @@ type PropsTodoList = {
   toDelete: Function;
   editing: boolean;
   toEdit: Function;
+  onReChange: Function;
+  editTodo: string;
 };
 const TodoList: React.FC<PropsTodoList> = (props) => {
   const list = props.todoList.map((content, i) => {
@@ -76,10 +95,14 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
           </div>
         ) : (
           <div>
-            <input type="text" value={content} />
+            <input
+              type="text"
+              value={props.editTodo}
+              onChange={(e) => props.onReChange(e, i)}
+            />
           </div>
         )}
-        <a href="#" onClick={() => props.toDelete(content)}>
+        <a href="#" onClick={() => props.toDelete(i)}>
           ×
         </a>
       </li>
