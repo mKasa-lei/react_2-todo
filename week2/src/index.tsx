@@ -38,7 +38,7 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
 
 const Todo = () => { 
   const [text,setText]=useState<string>("")
-  const [list,setList]=useState<Array<string>>(Array(""))
+  const [list,setList]=useState<Array<string>>([""]);
 
     return(
         <React.Fragment>
