@@ -1,22 +1,24 @@
-import React, { useRef,useEffect } from "react";
+import React, { useRef,useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 
 type InputProps={
+  // listState:string|null
 }
 const Input:React.FC<InputProps> = (props) => {
-  const inputEl=useRef(null);
-  useEffect(() => {
-    console.log(inputEl.current);
-}, []);
-  const onClick = () => {
-    alert(inputEl)
-  };
+  const [textState,setTextState]=useState(String)
+
   return (
     <li>
-      <input ref={inputEl} type="text" />
-      <button onClick={onClick}>Add</button>
+      <input type="text" onChange={
+          (event: React.ChangeEvent<HTMLInputElement>) => {
+            const textValue:string = String(event.target.value);
+            setTextState(textValue)
+            console.log(textState);
+      }
+      } />
+      <button>Add</button>
     </li>
   )
 }
@@ -30,6 +32,8 @@ type ToDoListProps={
 
 }
 const TodoList:React.FC<ToDoListProps> = (props) => {
+    // const [listState,setListState]=useState(String);
+
     return (
         <Pagination />
     );
