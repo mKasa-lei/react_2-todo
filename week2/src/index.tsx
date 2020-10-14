@@ -24,9 +24,10 @@ const Pagination = () => {
     <div></div>
   )
 }
+
 type ToDoListProps={
-  list:string
-  setList:React.Dispatch<React.SetStateAction<string>>
+  list:Array<string>
+  setList:React.Dispatch<React.SetStateAction<Array<string>>>
 }
 
 const TodoList:React.FC<ToDoListProps> = (props) => {
@@ -37,7 +38,7 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
 
 const Todo = () => { 
   const [text,setText]=useState<string>("")
-  const [list,setList]=useState<string>("")
+  const [list,setList]=useState<Array<string>>(Array(""))
 
     return(
         <React.Fragment>
@@ -45,7 +46,7 @@ const Todo = () => {
             value={text}
             setText={setText}
             />
-
+            
             <TodoList
             list={list}
             setList={setList}
