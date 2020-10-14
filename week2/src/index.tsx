@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
+import { toEditorSettings } from "typescript";
 
 const Todo: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
   const [todoList, setTodoList] = useState<Array<string>>(Array());
+  const [editing, setEditing] = useState<boolean>(true);
   const toAdd: Function = (e: any) => {
     e.preventDefault();
     if (todo) {
@@ -15,8 +17,11 @@ const Todo: React.FC = () => {
   const changeTxt: Function = (e: any) => {
     setTodo(e.target.value);
   };
-  const toDelete: Function = (i: number) => {
-    setTodoList(todoList.splice(i, 1));
+  const toDelete: Function = (content: string) => {
+    setTodoList(todoList.filter((todoItem) => todoItem !== content));
+  };
+  const toEdit: Function = () => {
+    setEditing(!editing);
   };
   return (
     <React.Fragment>
@@ -25,7 +30,12 @@ const Todo: React.FC = () => {
         toAdd={(e: any) => toAdd(e)}
         onChange={(e: any) => changeTxt(e)}
       />
-      <TodoList todoList={todoList} toDelete={(i: number) => toDelete(i)} />
+      <TodoList
+        todoList={todoList}
+        toDelete={(content: string) => toDelete(content)}
+        editing={editing}
+        toEdit={() => toEdit()}
+      />
     </React.Fragment>
   );
 };
@@ -50,14 +60,26 @@ const Input: React.FC<PropsInput> = (props) => {
 type PropsTodoList = {
   todoList: Array<string>;
   toDelete: Function;
+  editing: boolean;
+  toEdit: Function;
 };
 const TodoList: React.FC<PropsTodoList> = (props) => {
   const list = props.todoList.map((content, i) => {
     return (
       <li key={i}>
-        {content}
-        {/*  <a href="#" onClick={}>編集</a> */}
-        <a href="#" onClick={() => props.toDelete(i)}>
+        {props.editing ? (
+          <div>
+            <span>{content}</span>
+            <a href="#" onClick={() => props.toEdit()}>
+              編集
+            </a>
+          </div>
+        ) : (
+          <div>
+            <input type="text" value={content} />
+          </div>
+        )}
+        <a href="#" onClick={() => props.toDelete(content)}>
           ×
         </a>
       </li>
