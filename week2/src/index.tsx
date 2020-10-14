@@ -9,11 +9,14 @@ const Todo: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
   const [editTodo, setEditTodo] = useState<string>("");
   const [todoList, setTodoList] = useState<Array<string>>(Array());
-  const [editing, setEditing] = useState<boolean>(true);
+  const [editItem, setEditItem] = useState<number>(-1);
+  const [current, setCurrent] = useState<number>(-1);
+
   const toAdd: Function = (e: any) => {
     e.preventDefault();
     if (todo) {
       setTodoList(todoList.concat(todo));
+      setCurrent(current + 1);
     }
   };
   const changeTxt: Function = (e: any) => {
@@ -25,20 +28,31 @@ const Todo: React.FC = () => {
     setTodoList(test);
   };
 
-  const toEdit: Function = () => {
-    setEditing(!editing);
+  const toEdit: Function = (i: number, content: string) => {
+    setEditItem(i);
+    setEditTodo(content);
   };
-  const onReChange: Function = (e: any, i: number) => {
+  const onReChange: Function = (e: any) => {
     setEditTodo(e.target.value);
-    window.document.onkeydown = function (event) {
-      if (event.key === "Enter") {
-        todoList.splice(i, 1, editTodo);
-        const test = clone(todoList);
-        setTodoList(todoList);
-        setEditing(!editing);
-      }
-    };
   };
+  const pushEnter: Function = (e: any, i: number) => {
+    if (e.key === "Enter") {
+      todoList.splice(i, 1, editTodo);
+      const test = clone(todoList);
+      setTodoList(test);
+      setEditItem(-1);
+    }
+  };
+  const pushNumber: Function = (i: number) => {
+    setCurrent(i);
+  };
+  const pushPrev: Function = () => {
+    setCurrent(current-1);
+  };
+  const pushNext: Function = () => {
+    setCurrent(current+1);
+  };
+
   return (
     <React.Fragment>
       <Input
@@ -49,10 +63,15 @@ const Todo: React.FC = () => {
       <TodoList
         todoList={todoList}
         toDelete={(i: number) => toDelete(i)}
-        editing={editing}
-        toEdit={() => toEdit()}
-        onReChange={(e: any, i: number) => onReChange(e, i)}
+        editItem={editItem}
+        toEdit={(i: number, content: string) => toEdit(i, content)}
+        onReChange={(e: any) => onReChange(e)}
         editTodo={editTodo}
+        pushEnter={(e: any, i: number) => pushEnter(e, i)}
+        pushNumber={(i: number) => pushNumber(i)}
+        pushPrev={() => pushPrev()}
+        pushNext={() => pushNext()}
+        current={current}
       />
     </React.Fragment>
   );
@@ -78,19 +97,24 @@ const Input: React.FC<PropsInput> = (props) => {
 type PropsTodoList = {
   todoList: Array<string>;
   toDelete: Function;
-  editing: boolean;
+  editItem: number;
   toEdit: Function;
   onReChange: Function;
   editTodo: string;
+  pushEnter: Function;
+  pushNumber: Function;
+  pushPrev: Function;
+  pushNext: Function;
+  current: number;
 };
 const TodoList: React.FC<PropsTodoList> = (props) => {
   const list = props.todoList.map((content, i) => {
     return (
-      <li key={i}>
-        {props.editing ? (
+      <li key={i} className={props.current === i ? "active" : "none"}>
+        {props.editItem !== i ? (
           <div>
             <span>{content}</span>
-            <a href="#" onClick={() => props.toEdit()}>
+            <a href="#" onClick={() => props.toEdit(i, content)}>
               編集
             </a>
           </div>
@@ -99,7 +123,8 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
             <input
               type="text"
               value={props.editTodo}
-              onChange={(e) => props.onReChange(e, i)}
+              onChange={(e) => props.onReChange(e)}
+              onKeyPress={(e) => props.pushEnter(e, i)}
             />
           </div>
         )}
@@ -109,7 +134,43 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
       </li>
     );
   });
-  return <ul>{list}</ul>;
+  return (
+    <React.Fragment>
+      <ul>{list}</ul>
+      <Pagination
+        todoList={props.todoList}
+        pushNumber={(i: number) => props.pushNumber(i)}
+        pushPrev={() => props.pushPrev()}
+        pushNext={() => props.pushNext()}
+      />
+    </React.Fragment>
+  );
+};
+
+type PropsPagination = {
+  todoList: Array<string>;
+  pushNumber: Function;
+  pushPrev: Function;
+  pushNext: Function;
+
+};
+const Pagination: React.FC<PropsPagination> = (props) => {
+  const list = props.todoList.map((content, i) => {
+    return (
+      <li key={i}>
+        <a href="#" onClick={() => props.pushNumber(i)}>
+          {i + 1}
+        </a>
+      </li>
+    );
+  });
+  return (
+    <div>
+      <a href="#" onClick={()=>props.pushPrev()}>&lt;</a>
+      <ol>{list}</ol>
+      <a href="#" onClick={()=>props.pushNext()}>&gt;</a>
+    </div>
+  );
 };
 
 ReactDOM.render(<Todo />, document.getElementById("root"));
