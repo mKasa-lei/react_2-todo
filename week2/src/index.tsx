@@ -24,6 +24,7 @@ const Todo: React.FC = () => {
     const test = clone(todoList);
     setTodoList(test);
   };
+
   const toEdit: Function = () => {
     setEditing(!editing);
   };
