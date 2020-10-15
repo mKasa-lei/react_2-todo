@@ -6,19 +6,19 @@ import * as serviceWorker from "./serviceWorker";
 type InputProps={
   value:string
   setText:React.Dispatch<React.SetStateAction<string>>
-  concatList:()=>void
+  concatList:(i:string)=>void
 
 }
 const Input:React.FC<InputProps> = (props) => {
   return (
-    <li>
+    <div>
       <input type="text" onChange={
           (event: React.ChangeEvent<HTMLInputElement>) => {
             props.setText(event.target.value)
       }
       } />
-      <button onClick={()=>props.concatList}>Add</button>
-    </li>
+      <button onClick={()=>props.concatList(props.value)}>Add</button>
+    </div>
   )
 }
 const Pagination = () => {
@@ -34,14 +34,17 @@ type ToDoListProps={
 }
 
 const TodoList:React.FC<ToDoListProps> = (props) => {
-  const listMap=props.list.map((value,index)=>{
+  const listMap=props.list.map((value,index)=>(
     <li key={index}>
-      {props.text}
+      {value}
     </li>
-  })
+  ))
 
     return (
+      <div>
+        <ul>{listMap}</ul>
         <Pagination />
+      </div>
     );
 }
 
