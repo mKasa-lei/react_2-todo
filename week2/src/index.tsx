@@ -26,11 +26,19 @@ const Pagination = () => {
 }
 
 type ToDoListProps={
+  text:string
   list:Array<string>
   setList:React.Dispatch<React.SetStateAction<Array<string>>>
 }
 
 const TodoList:React.FC<ToDoListProps> = (props) => {
+  const concatList=props.setList(props.list.concat(props.text))
+  const listMap=props.list.map((value,index)=>{
+    <li key={index}>
+      <p>{props.text}</p>
+    </li>
+  })
+
     return (
         <Pagination />
     );
@@ -39,7 +47,6 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
 const Todo = () => { 
   const [text,setText]=useState<string>("")
   const [list,setList]=useState<Array<string>>([""]);
-
     return(
         <React.Fragment>
             <Input
@@ -48,6 +55,7 @@ const Todo = () => {
             />
             
             <TodoList
+            text={text}
             list={list}
             setList={setList}
             />
