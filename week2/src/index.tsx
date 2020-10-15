@@ -56,7 +56,7 @@ const Todo: React.FC<todoProps> = () => {
 
     }
 
-    return (
+    return(
         <React.Fragment>
             <Input addTodo={() => addTodo} todo={todo} />
             <TodoList todo={todo}/>
