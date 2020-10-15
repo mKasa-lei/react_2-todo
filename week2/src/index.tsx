@@ -6,6 +6,8 @@ import * as serviceWorker from "./serviceWorker";
 type InputProps={
   value:string
   setText:React.Dispatch<React.SetStateAction<string>>
+  concatList:()=>void
+
 }
 const Input:React.FC<InputProps> = (props) => {
   return (
@@ -15,7 +17,7 @@ const Input:React.FC<InputProps> = (props) => {
             props.setText(event.target.value)
       }
       } />
-      <button>Add</button>
+      <button onClick={()=>props.concatList}>Add</button>
     </li>
   )
 }
@@ -32,10 +34,9 @@ type ToDoListProps={
 }
 
 const TodoList:React.FC<ToDoListProps> = (props) => {
-  const concatList=props.setList(props.list.concat(props.text))
   const listMap=props.list.map((value,index)=>{
     <li key={index}>
-      <p>{props.text}</p>
+      {props.text}
     </li>
   })
 
@@ -47,11 +48,13 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
 const Todo = () => { 
   const [text,setText]=useState<string>("")
   const [list,setList]=useState<Array<string>>([""]);
+  const concatList=()=>setList(list.concat(text))
     return(
         <React.Fragment>
             <Input
             value={text}
             setText={setText}
+            concatList={concatList}
             />
             
             <TodoList
