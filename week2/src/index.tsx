@@ -4,6 +4,7 @@ import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 import { toEditorSettings } from "typescript";
 import { clone } from "lodash";
+import { promises } from "dns";
 
 const Todo: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
@@ -47,10 +48,10 @@ const Todo: React.FC = () => {
     setCurrent(i);
   };
   const pushPrev: Function = () => {
-    setCurrent(current-1);
+    setCurrent(current - 1);
   };
   const pushNext: Function = () => {
-    setCurrent(current+1);
+    setCurrent(current + 1);
   };
 
   return (
@@ -142,6 +143,7 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
         pushNumber={(i: number) => props.pushNumber(i)}
         pushPrev={() => props.pushPrev()}
         pushNext={() => props.pushNext()}
+        current={props.current}
       />
     </React.Fragment>
   );
@@ -152,9 +154,33 @@ type PropsPagination = {
   pushNumber: Function;
   pushPrev: Function;
   pushNext: Function;
-
+  current: number;
 };
 const Pagination: React.FC<PropsPagination> = (props) => {
+  var currentlist = props.todoList;
+  if (props.todoList.length > 5) {
+    if (props.current < 2) {
+      currentlist = props.todoList.filter((content, i) => {
+        return i < 5;
+      });
+    } else if (props.current > 7) {
+      currentlist = props.todoList.filter((content, i) => {
+        return i > 4;
+      });
+    } else if (
+      props.todoList[props.current - 2] &&
+      props.todoList[props.current + 2]
+    ) {
+      currentlist = props.todoList.filter((content, i) => {
+        return i > props.current - 3 && i < props.current + 3;
+      });
+    } else {
+      currentlist = props.todoList.filter((content, i) => {
+        return props.current - 5 < i;
+      });
+    }
+  }
+ 
   const list = props.todoList.map((content, i) => {
     return (
       <li key={i}>
@@ -166,9 +192,13 @@ const Pagination: React.FC<PropsPagination> = (props) => {
   });
   return (
     <div>
-      <a href="#" onClick={()=>props.pushPrev()}>&lt;</a>
+      <a href="#" onClick={() => props.pushPrev()}>
+        &lt;
+      </a>
       <ol>{list}</ol>
-      <a href="#" onClick={()=>props.pushNext()}>&gt;</a>
+      <a href="#" onClick={() => props.pushNext()}>
+        &gt;
+      </a>
     </div>
   );
 };
