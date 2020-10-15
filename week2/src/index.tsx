@@ -31,15 +31,16 @@ type ToDoListProps={
   text:string
   list:Array<string>
   setList:React.Dispatch<React.SetStateAction<Array<string>>>
+  deleteList:(i:number,index:string)=>void
 }
 
 const TodoList:React.FC<ToDoListProps> = (props) => {
   const listMap=props.list.map((value,index)=>(
     <li key={index}>
       {value}
+      <a href="#" onClick={()=>props.deleteList(index,value)}>消去</a>
     </li>
   ))
-
     return (
       <div>
         <ul>{listMap}</ul>
@@ -50,8 +51,11 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
 
 const Todo = () => { 
   const [text,setText]=useState<string>("")
-  const [list,setList]=useState<Array<string>>([""]);
+  const [list,setList]=useState<Array<string>>([]);
   const concatList=()=>setList(list.concat(text))
+  const deleteList=(i:number,index:string)=>setList(list.filter(i=>i!==index))
+  const editList=
+  
     return(
         <React.Fragment>
             <Input
@@ -64,6 +68,7 @@ const Todo = () => {
             text={text}
             list={list}
             setList={setList}
+            deleteList={deleteList}
             />
         </React.Fragment>
     )
