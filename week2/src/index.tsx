@@ -17,7 +17,7 @@ const Todo: React.FC = () => {
   const getDate: Function = () => {
     const now = new Date();
     const year = now.getFullYear();
-    const mon = now.getMonth() + 1; //１を足すこと
+    const mon = now.getMonth() + 1; 
     const day = now.getDate();
     const hour = now.getHours();
     const min = now.getMinutes();
@@ -125,6 +125,7 @@ type PropsTodoList = {
 };
 const TodoList: React.FC<PropsTodoList> = (props) => {
   const list = props.todoList.map((content, i) => {
+    console.log(Math.floor(i/10+1))
     return (
       <li key={i} className={props.current === i ? "active" : "none"}>
         <span>{props.date}</span>
@@ -173,48 +174,28 @@ type PropsPagination = {
   current: number;
 };
 const Pagination: React.FC<PropsPagination> = (props) => {
-  var currentlist = props.todoList;
-  if (props.todoList.length > 5) {
-    if (props.current < 2) {
-      currentlist = props.todoList.filter((content, i) => {
-        return i < 5;
-      });
-    } else if (props.current > 7) {
-      currentlist = props.todoList.filter((content, i) => {
-        return i > 4;
-      });
-    } else if (
-      props.todoList[props.current - 2] &&
-      props.todoList[props.current + 2]
-    ) {
-      currentlist = props.todoList.filter((content, i) => {
-        return i > props.current - 3 && i < props.current + 3;
-      });
-    } else {
-      currentlist = props.todoList.filter((content, i) => {
-        return props.current - 5 < i;
-      });
-    }
-  }
 
-  const list = props.todoList.map((content, i) => {
+const paginations=Math.floor((props.todoList.length/10)+1);
+
+const paginationList=Array(paginations).fill(null);
+
+
+  const list = paginationList.map((content, i) => {
     return (
-      <li key={i}>
-        <a href="#" onClick={() => props.pushNumber(i)}>
+      <li key={i} onClick={() => props.pushNumber(i)}>
           {i + 1}
-        </a>
       </li>
     );
   });
   return (
     <div>
-      <a href="#" onClick={() => props.pushPrev()}>
+      <span onClick={() => props.pushPrev()}>
         &lt;
-      </a>
+      </span>
       <ol>{list}</ol>
-      <a href="#" onClick={() => props.pushNext()}>
+      <span onClick={() => props.pushNext()}>
         &gt;
-      </a>
+      </span>
     </div>
   );
 };
