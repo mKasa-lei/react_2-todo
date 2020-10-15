@@ -12,12 +12,24 @@ const Todo: React.FC = () => {
   const [todoList, setTodoList] = useState<Array<string>>(Array());
   const [editItem, setEditItem] = useState<number>(-1);
   const [current, setCurrent] = useState<number>(-1);
+  const [date, setDate] = useState<string | number>("");
 
+  const getDate: Function = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const mon = now.getMonth() + 1; //１を足すこと
+    const day = now.getDate();
+    const hour = now.getHours();
+    const min = now.getMinutes();
+    const sec = now.getSeconds();
+    setDate(year + "/" + mon + "/" + day + " " + hour + ":" + min + ":" + sec);
+  };
   const toAdd: Function = (e: any) => {
     e.preventDefault();
     if (todo) {
       setTodoList(todoList.concat(todo));
       setCurrent(current + 1);
+      getDate();
     }
   };
   const changeTxt: Function = (e: any) => {
@@ -42,6 +54,7 @@ const Todo: React.FC = () => {
       const test = clone(todoList);
       setTodoList(test);
       setEditItem(-1);
+      getDate();
     }
   };
   const pushNumber: Function = (i: number) => {
@@ -73,6 +86,7 @@ const Todo: React.FC = () => {
         pushPrev={() => pushPrev()}
         pushNext={() => pushNext()}
         current={current}
+        date={date}
       />
     </React.Fragment>
   );
@@ -107,11 +121,13 @@ type PropsTodoList = {
   pushPrev: Function;
   pushNext: Function;
   current: number;
+  date: string | number;
 };
 const TodoList: React.FC<PropsTodoList> = (props) => {
   const list = props.todoList.map((content, i) => {
     return (
       <li key={i} className={props.current === i ? "active" : "none"}>
+        <span>{props.date}</span>
         {props.editItem !== i ? (
           <div>
             <span>{content}</span>
@@ -180,7 +196,7 @@ const Pagination: React.FC<PropsPagination> = (props) => {
       });
     }
   }
- 
+
   const list = props.todoList.map((content, i) => {
     return (
       <li key={i}>
