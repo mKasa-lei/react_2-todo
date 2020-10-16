@@ -11,13 +11,13 @@ const Todo: React.FC = () => {
   const [editTodo, setEditTodo] = useState<string>("");
   const [todoList, setTodoList] = useState<Array<string>>(Array());
   const [editItem, setEditItem] = useState<number>(-1);
-  const [current, setCurrent] = useState<number>(-1);
+  const [current, setCurrent] = useState<number>(0);
   const [date, setDate] = useState<string | number>("");
 
   const getDate: Function = () => {
     const now = new Date();
     const year = now.getFullYear();
-    const mon = now.getMonth() + 1; 
+    const mon = now.getMonth() + 1;
     const day = now.getDate();
     const hour = now.getHours();
     const min = now.getMinutes();
@@ -27,9 +27,18 @@ const Todo: React.FC = () => {
   const toAdd: Function = (e: any) => {
     e.preventDefault();
     if (todo) {
-      setTodoList(todoList.concat(todo));
-      setCurrent(current + 1);
-      getDate();
+      if (todoList.length > 99) {
+        return;
+      } else {
+        setTodoList(todoList.concat(todo));
+        getDate();
+        for (var n = 1; n < 10; n++) {
+          if (todoList.length === 10 * n) {
+            console.log(todoList.length)
+            setCurrent(current+1)
+          }
+        }
+      }
     }
   };
   const changeTxt: Function = (e: any) => {
@@ -124,10 +133,12 @@ type PropsTodoList = {
   date: string | number;
 };
 const TodoList: React.FC<PropsTodoList> = (props) => {
-  const list = props.todoList.map((content, i) => {
-    console.log(Math.floor(i/10+1))
+  const list = props.todoList.map((content, i) => { 
     return (
-      <li key={i} className={props.current === i ? "active" : "none"}>
+      <li
+        key={i}
+        className={props.current === Math.floor(i / 10) ? "active" : "none"}
+      >
         <span>{props.date}</span>
         {props.editItem !== i ? (
           <div>
@@ -174,28 +185,22 @@ type PropsPagination = {
   current: number;
 };
 const Pagination: React.FC<PropsPagination> = (props) => {
-
-const paginations=Math.floor((props.todoList.length/10)+1);
-
-const paginationList=Array(paginations).fill(null);
-
+  const paginations = Math.floor((props.todoList.length-1) / 10 + 1);
+console.log(paginations)
+  const paginationList = Array(paginations).fill(null);
 
   const list = paginationList.map((content, i) => {
     return (
       <li key={i} onClick={() => props.pushNumber(i)}>
-          {i + 1}
+        {i + 1}
       </li>
     );
   });
   return (
     <div>
-      <span onClick={() => props.pushPrev()}>
-        &lt;
-      </span>
+      <span onClick={() => props.pushPrev()}>&lt;</span>
       <ol>{list}</ol>
-      <span onClick={() => props.pushNext()}>
-        &gt;
-      </span>
+      <span onClick={() => props.pushNext()}>&gt;</span>
     </div>
   );
 };
