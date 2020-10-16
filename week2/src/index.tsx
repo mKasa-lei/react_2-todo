@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
-import { toEditorSettings } from "typescript";
 import { clone } from "lodash";
-import { promises } from "dns";
 
 const Todo: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
   const [editTodo, setEditTodo] = useState<string>("");
-  const [todoList, setTodoList] = useState<Array<string>>(Array());
+  const [todoList, setTodoList] = useState<Array<string>>([]);
   const [editItem, setEditItem] = useState<number>(-1);
   const [current, setCurrent] = useState<number>(0);
   const [date, setDate] = useState<string | number>("");
@@ -34,8 +32,8 @@ const Todo: React.FC = () => {
         getDate();
         for (var n = 1; n < 10; n++) {
           if (todoList.length === 10 * n) {
-            console.log(todoList.length)
-            setCurrent(current+1)
+            console.log(todoList.length);
+            setCurrent(current + 1);
           }
         }
       }
@@ -133,19 +131,19 @@ type PropsTodoList = {
   date: string | number;
 };
 const TodoList: React.FC<PropsTodoList> = (props) => {
-  const list = props.todoList.map((content, i) => { 
+  const list = props.todoList.map((content, i) => {
     return (
       <li
         key={i}
         className={props.current === Math.floor(i / 10) ? "active" : "none"}
       >
-        <span>{props.date}</span>
         {props.editItem !== i ? (
           <div>
             <span>{content}</span>
-            <a href="#" onClick={() => props.toEdit(i, content)}>
+            <span>{props.date}</span>
+            <button onClick={() => props.toEdit(i, content)}>
               編集
-            </a>
+            </button>
           </div>
         ) : (
           <div>
@@ -157,9 +155,9 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
             />
           </div>
         )}
-        <a href="#" onClick={() => props.toDelete(i)}>
+        <button onClick={() => props.toDelete(i)}>
           ×
-        </a>
+        </button>
       </li>
     );
   });
@@ -185,13 +183,47 @@ type PropsPagination = {
   current: number;
 };
 const Pagination: React.FC<PropsPagination> = (props) => {
-  const paginations = Math.floor((props.todoList.length-1) / 10 + 1);
-console.log(paginations)
-  const paginationList = Array(paginations).fill(null);
+  const paginations = Math.floor((props.todoList.length - 1) / 10 + 1);
+
+  const paginationList =
+    props.todoList.length === 0
+      ? Array(1).fill(null)
+      : Array(paginations).fill(null);
+
+  const displayList = (i: number) => {
+    if (paginations > 5) {
+      if (
+        props.todoList[(props.current - 2) * 10] &&
+        props.todoList[(props.current + 2) * 10]
+      ) {
+        if (i > props.current - 3 && i < props.current + 3) return "active";
+        else return "none";
+      } else if (
+        props.current - 5 < i &&
+        !props.todoList[(props.current + 1) * 10]
+      )
+        return "active";
+      else if (props.current < 2) {
+        if (i < 5) return "active";
+        else return "none";
+      } else if (props.current > 7) {
+        if (i > 4) return "active";
+        else return "none";
+      } else {
+        return "none";
+      }
+    } else {
+      return "active";
+    }
+  };
 
   const list = paginationList.map((content, i) => {
     return (
-      <li key={i} onClick={() => props.pushNumber(i)}>
+      <li
+        className={displayList(i)}
+        key={i}
+        onClick={() => props.pushNumber(i)}
+      >
         {i + 1}
       </li>
     );
