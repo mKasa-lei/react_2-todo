@@ -30,29 +30,55 @@ const Pagination = () => {
 type ToDoListProps={
   text:string;
   list:Array<string>;
-  changeTag:boolean;
-  setChangeTag:React.Dispatch<React.SetStateAction<boolean>>
+  setText:React.Dispatch<React.SetStateAction<string>>
+  changeTag:number;
+  setChangeTag:React.Dispatch<React.SetStateAction<number>>
   setList:React.Dispatch<React.SetStateAction<Array<string>>>;
   editList:()=>JSX.Element
   deleteList:(i:number,index:string)=>void;
 }
 
 const TodoList:React.FC<ToDoListProps> = (props) => {
+  const nowData = new Date();
+
+  const Y = nowData.getFullYear()
+  const M = ("00" + nowData.getMonth()+1).slice(-2)
+  const D = ("00" + nowData.getDate()).slice(-2)
+  const h = ("00" + nowData.getHours()).slice(-2)
+  const m = ("00" + nowData.getMinutes()).slice(-2)
+  const s = ("00" + nowData.getSeconds()).slice(-2)
+
+  const keyPress = (event: React.KeyboardEvent) => {
+    const EnterKeyCode=13;
+    if (event.keyCode === EnterKeyCode){
+      props.setChangeTag(-1)
+    }
+  }  
+
   const listMap=props.list.map((value,index)=>(
-    <li key={index}>
-      {value}
-      <a href="#" onClick={()=>props.setChangeTag(!props.changeTag)}>編集</a>
-      <a href="#" onClick={()=>props.deleteList(index,value)}>消去</a>
-    </li>
+      props.changeTag !==index ? (
+      <li key={index}>
+        {value}
+        {Y+"/"+M+"/"+D+" "+h+":"+m+"/"+s}
+        <a href="#" onClick={()=>props.setChangeTag(index)}>編集</a>
+        <a href="#" onClick={()=>props.deleteList(index,value)}>消去</a>
+      </li>
+      ):(
+      <input
+      onChange={
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+          const listCopy=props.list;
+          listCopy[index] = event.target.value ;
+          props.setList(listCopy)
+        }
+      }
+      onkeydown={keyPress}
+      />
+      )
   ))
     return (
       <div>
-        {props.changeTag ? (
         <ul>{listMap}</ul>
-        ):(
-        <h1>切り替え成功！</h1>
-          )
-        }
         <Pagination />
       </div>
     );
@@ -61,7 +87,7 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
 const Todo = () => { 
   const [text,setText]=useState<string>("")
   const [list,setList]=useState<Array<string>>([]);
-  const [changeTag,setChangeTag]=useState(true)
+  const [changeTag,setChangeTag]=useState<number>(-1)
   const concatList=()=>setList(list.concat(text))
   const deleteList=(i:number,index:string)=>setList(list.filter(i=>i!==index))
   const editList=()=>
@@ -85,6 +111,7 @@ const Todo = () => {
             <TodoList
             text={text}
             list={list}
+            setText={setText}
             setList={setList}
             deleteList={deleteList}
             changeTag={changeTag}
