@@ -1,3 +1,33 @@
-.none{
-    display: none;
+* {
+  word-break: normal;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+%flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+ul,
+ol {
+  list-style: none;
+}
+.todo-form {
+  @extend %flex-center;
+}
+.todo-list {
+    height:300px;
+  li {
+    @extend %flex-center;
+  }
+}
+li.none {
+  display: none;
+}
+.pagenation {
+  @extend %flex-center;
+  .pagenation-list {
+    display: flex;
+  }
 }

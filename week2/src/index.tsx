@@ -105,7 +105,7 @@ type PropsInput = {
 };
 const Input: React.FC<PropsInput> = (props) => {
   return (
-    <form onSubmit={(e) => props.toAdd(e)}>
+    <form className="todo-form" onSubmit={(e) => props.toAdd(e)}>
       <input
         type="text"
         value={props.todo}
@@ -163,7 +163,7 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
   });
   return (
     <React.Fragment>
-      <ul>{list}</ul>
+      <ul className="todo-list">{list}</ul>
       <Pagination
         todoList={props.todoList}
         pushNumber={(i: number) => props.pushNumber(i)}
@@ -229,9 +229,9 @@ const Pagination: React.FC<PropsPagination> = (props) => {
     );
   });
   return (
-    <div>
+    <div className="pagenation">
       <span onClick={() => props.pushPrev()}>&lt;</span>
-      <ol>{list}</ol>
+      <ol className="pagenation-list">{list}</ol>
       <span onClick={() => props.pushNext()}>&gt;</span>
     </div>
   );
