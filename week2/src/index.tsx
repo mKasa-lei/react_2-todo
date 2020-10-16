@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import ReactDOM from "react-dom";
 import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
@@ -9,12 +9,14 @@ import * as serviceWorker from "./serviceWorker";
 
 type inputProps = {
     todo: string[];
+    text: string;
     addTodo: () => void;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 const Input: React.FC<inputProps> = (props) => {
     return (
         <form>
-            <input type="text" />
+            <input type="text" onChange={props.onChange} value={props.text} />
             <button type="button" onClick={props.addTodo}>追加</button>
         </form>
     );
@@ -24,13 +26,12 @@ const Input: React.FC<inputProps> = (props) => {
  * 追加されたTODOを管理する
  */
 type listProps = {
-    todo: string[];
+    todo: Array<string>;
 }
 const TodoList: React.FC<listProps> = (props) => {
-    console.log(props.todo);
     const todoList =
         props.todo.map((item: string, index: number) => (
-            <li key={index}>
+            <li key={index} className={index === 0 ? 'no-list' : 'add-list'}>
                 <span>{item}</span>
                 <button type="button">編集</button>
                 <button type="button">✕</button>
@@ -50,15 +51,24 @@ type todoProps = {
 
 }
 const Todo: React.FC<todoProps> = () => {
-    const [todo, setTodo] = useState<string[]>(['']);
+    const [text, setText] = useState<string>('');
+    const [todo, setTodo] = useState<Array<string>>([text]);//Todoの中身
 
     const addTodo = () => {
+        const newTodo = todo.concat(text);
+        setTodo(newTodo);
+        setText('');
+        console.log(newTodo);
+    }
 
+    const textChange = (event: any) => {
+        const value = event.target.value;
+        setText(value);
     }
 
     return(
         <React.Fragment>
-            <Input addTodo={() => addTodo} todo={todo} />
+            <Input addTodo={addTodo} todo={todo} text={text} onChange={textChange}/>
             <TodoList todo={todo}/>
         </React.Fragment>
     );
