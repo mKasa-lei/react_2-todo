@@ -28,22 +28,31 @@ const Pagination = () => {
 }
 
 type ToDoListProps={
-  text:string
-  list:Array<string>
-  setList:React.Dispatch<React.SetStateAction<Array<string>>>
-  deleteList:(i:number,index:string)=>void
+  text:string;
+  list:Array<string>;
+  changeTag:boolean;
+  setChangeTag:React.Dispatch<React.SetStateAction<boolean>>
+  setList:React.Dispatch<React.SetStateAction<Array<string>>>;
+  editList:()=>JSX.Element
+  deleteList:(i:number,index:string)=>void;
 }
 
 const TodoList:React.FC<ToDoListProps> = (props) => {
   const listMap=props.list.map((value,index)=>(
     <li key={index}>
       {value}
+      <a href="#" onClick={()=>props.setChangeTag(!props.changeTag)}>編集</a>
       <a href="#" onClick={()=>props.deleteList(index,value)}>消去</a>
     </li>
   ))
     return (
       <div>
+        {props.changeTag ? (
         <ul>{listMap}</ul>
+        ):(
+        <h1>切り替え成功！</h1>
+          )
+        }
         <Pagination />
       </div>
     );
@@ -52,9 +61,18 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
 const Todo = () => { 
   const [text,setText]=useState<string>("")
   const [list,setList]=useState<Array<string>>([]);
+  const [changeTag,setChangeTag]=useState(true)
   const concatList=()=>setList(list.concat(text))
   const deleteList=(i:number,index:string)=>setList(list.filter(i=>i!==index))
-  const editList=
+  const editList=()=>
+  {return (
+  <input type="text" onChange={
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setText(event.target.value)
+    }
+    } />
+  )}
+
   
     return(
         <React.Fragment>
@@ -69,6 +87,9 @@ const Todo = () => {
             list={list}
             setList={setList}
             deleteList={deleteList}
+            changeTag={changeTag}
+            setChangeTag={setChangeTag}
+            editList={editList}
             />
         </React.Fragment>
     )
