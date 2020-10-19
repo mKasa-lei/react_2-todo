@@ -4,15 +4,20 @@ import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 import { clone } from "lodash";
 
+type Todo = Array<{
+  todo: string,
+  date: string|number
+}>
+
 const Todo: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
+  const [todoList, setTodoList ] = useState<Todo>([])
   const [editTodo, setEditTodo] = useState<string>("");
-  const [todoList, setTodoList] = useState<Array<string>>([]);
   const [editItem, setEditItem] = useState<number>(-1);
   const [current, setCurrent] = useState<number>(0);
-  const [date, setDate] = useState<string | number>("");
 
   const getDate: Function = () => {
+    return new Promise(function (resolve, reject) {
     const now = new Date();
     const year = now.getFullYear();
     const mon = now.getMonth() + 1;
@@ -20,7 +25,9 @@ const Todo: React.FC = () => {
     const hour = now.getHours();
     const min = now.getMinutes();
     const sec = now.getSeconds();
-    setDate(year + "/" + mon + "/" + day + " " + hour + ":" + min + ":" + sec);
+    const nowDate=year + "/" + mon + "/" + day + " " + hour + ":" + min + ":" + sec;
+    resolve(nowDate)
+    })
   };
   const toAdd: Function = (e: any) => {
     e.preventDefault();
@@ -28,11 +35,12 @@ const Todo: React.FC = () => {
       if (todoList.length > 99) {
         return;
       } else {
-        setTodoList(todoList.concat(todo));
-        getDate();
+        getDate().then(function (nowDate:string|number) {
+          console.log(nowDate)
+          setTodoList(todoList.concat([{todo:todo,date:nowDate}]));
+        });
         for (var n = 1; n < 10; n++) {
           if (todoList.length === 10 * n) {
-            console.log(todoList.length);
             setCurrent(current + 1);
           }
         }
@@ -48,20 +56,21 @@ const Todo: React.FC = () => {
     setTodoList(test);
   };
 
-  const toEdit: Function = (i: number, content: string) => {
+  const toEdit: Function = (i: number, content: any) => {
     setEditItem(i);
-    setEditTodo(content);
+    setEditTodo(content.todo);
   };
   const onReChange: Function = (e: any) => {
     setEditTodo(e.target.value);
   };
   const pushEnter: Function = (e: any, i: number) => {
     if (e.key === "Enter") {
-      todoList.splice(i, 1, editTodo);
+      getDate().then(function (nowDate:string|number) {
+        todoList.splice(i, 1, {todo:editTodo,date:nowDate});
       const test = clone(todoList);
       setTodoList(test);
       setEditItem(-1);
-      getDate();
+      })
     }
   };
   const pushNumber: Function = (i: number) => {
@@ -85,7 +94,7 @@ const Todo: React.FC = () => {
         todoList={todoList}
         toDelete={(i: number) => toDelete(i)}
         editItem={editItem}
-        toEdit={(i: number, content: string) => toEdit(i, content)}
+        toEdit={(i: number, content: any) => toEdit(i, content)}
         onReChange={(e: any) => onReChange(e)}
         editTodo={editTodo}
         pushEnter={(e: any, i: number) => pushEnter(e, i)}
@@ -93,7 +102,6 @@ const Todo: React.FC = () => {
         pushPrev={() => pushPrev()}
         pushNext={() => pushNext()}
         current={current}
-        date={date}
       />
     </React.Fragment>
   );
@@ -117,7 +125,7 @@ const Input: React.FC<PropsInput> = (props) => {
 };
 
 type PropsTodoList = {
-  todoList: Array<string>;
+  todoList: Todo;
   toDelete: Function;
   editItem: number;
   toEdit: Function;
@@ -128,7 +136,6 @@ type PropsTodoList = {
   pushPrev: Function;
   pushNext: Function;
   current: number;
-  date: string | number;
 };
 const TodoList: React.FC<PropsTodoList> = (props) => {
   const list = props.todoList.map((content, i) => {
@@ -139,8 +146,8 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
       >
         {props.editItem !== i ? (
           <div>
-            <span>{content}</span>
-            <span>{props.date}</span>
+            <span>{content.todo}</span>
+            <span>{content.date}</span>
             <button onClick={() => props.toEdit(i, content)}>
               編集
             </button>
@@ -176,7 +183,7 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
 };
 
 type PropsPagination = {
-  todoList: Array<string>;
+  todoList: Todo;
   pushNumber: Function;
   pushPrev: Function;
   pushNext: Function;
