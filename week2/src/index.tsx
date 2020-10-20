@@ -21,9 +21,62 @@ const Input:React.FC<InputProps> = (props) => {
     </div>
   )
 }
-const Pagination = () => {
+
+type PaginationProps={
+  listCopy:Array<string>;
+}
+
+const Pagination:React.FC<PaginationProps> = (props) => {
+  const [CurrentIndex,setCurrentIndex]=useState(0)
+  const [paginationLength,setPaginationLength]=useState<Array<number>>([1,2,3,4,5])
+  const amountPage=props.listCopy.length / 3;
+  
+  const ClickFirst=()=>{
+    setCurrentIndex(1)
+  }
+  const ClickLast=()=>{
+    setCurrentIndex(paginationLength.length)
+  }
+  const ClickPrevious=()=>{
+    if (CurrentIndex===1){
+      return;
+    }
+    setCurrentIndex(CurrentIndex-1)
+    console.log(CurrentIndex)
+  }
+  const ClickNext=()=>{
+    if (CurrentIndex>amountPage){
+      return;
+    }
+    setCurrentIndex(CurrentIndex+1)
+    console.log(props.listCopy.length)
+  }
+  const PaginationClick=(i:number)=>{
+    setCurrentIndex(i+1)
+    console.log(CurrentIndex)
+  };
+
+  const rendPagination=
+  paginationLength.map((value,index)=>(
+    <li key={index} className="Pagination chosen">
+      <a className={index===CurrentIndex-1 ? 'chosen':'unchosen'} href='#' onClick={()=>{PaginationClick(index)}}>
+        {index+1}
+      </a>
+    </li>
+  ))
+
   return(
-    <div></div>
+    <div>
+      <a href='#' onClick={()=>ClickFirst()}>first</a>
+      <a href="#" onClick={()=>ClickPrevious()}>
+        ＜
+      </a>
+      {rendPagination}
+      <a href="#" onClick={()=>ClickNext()}>
+        ＞
+      </a>
+      <a href='#' onClick={()=>ClickLast()}>last</a>
+    </div>
   )
 }
 
@@ -42,7 +95,7 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
   const nowData = new Date();
 
   const Y = nowData.getFullYear()
-  const M = ("00" + nowData.getMonth()+1).slice(-2)
+  const M = ("00" + (nowData.getMonth()+1)).slice(-2)
   const D = ("00" + nowData.getDate()).slice(-2)
   const h = ("00" + nowData.getHours()).slice(-2)
   const m = ("00" + nowData.getMinutes()).slice(-2)
@@ -55,31 +108,34 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
     }
   }  
 
+  const listCopy=props.list;
+
   const listMap=props.list.map((value,index)=>(
       props.changeTag !==index ? (
       <li key={index}>
         {value}
-        {Y+"/"+M+"/"+D+" "+h+":"+m+"/"+s}
+        {Y+"/"+M+"/"+D+" "+h+":"+m+":"+s}
         <a href="#" onClick={()=>props.setChangeTag(index)}>編集</a>
         <a href="#" onClick={()=>props.deleteList(index,value)}>消去</a>
       </li>
       ):(
       <input
+      onKeyDown={keyPress}
       onChange={
         (event: React.ChangeEvent<HTMLInputElement>) => {
-          const listCopy=props.list;
           listCopy[index] = event.target.value ;
           props.setList(listCopy)
         }
       }
-      onkeydown={keyPress}
       />
       )
   ))
     return (
       <div>
         <ul>{listMap}</ul>
-        <Pagination />
+        <Pagination
+        listCopy={listCopy} 
+        />
       </div>
     );
 }

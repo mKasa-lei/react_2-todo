@@ -1,0 +1,13 @@
+.Pagination{
+    display: table-cell;
+    list-style: none;
+    border: 1px;
+    border-style: solid;
+}
+.chosen{
+    padding: 5px;    
+    color: #FF0000;
+}
+.unchosen{
+    background-color: #FFF;
+}
