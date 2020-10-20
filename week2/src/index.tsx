@@ -82,7 +82,7 @@ const Todo: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
+    <div className="todo-list">
       <Input
         todo={todo}
         toAdd={(e: any) => toAdd(e)}
@@ -101,7 +101,7 @@ const Todo: React.FC = () => {
         pushNext={() => pushNext()}
         current={current}
       />
-    </React.Fragment>
+    </div>
   );
 };
 type PropsInput = {
@@ -143,28 +143,32 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
         className={props.current === Math.floor(i / 10) ? "active" : "none"}
       >
         {props.editItem !== i ? (
-          <div>
-            <span>{content.todo}</span>
-            <span>{content.date}</span>
-            <button onClick={() => props.toEdit(i, content)}>編集</button>
-          </div>
+          <React.Fragment>
+            <div className="display-input">
+            <div className="todo">{content.todo}</div>
+            <div className="date">{content.date}</div>
+            </div>
+            <div className="display-btn">
+            <button className="edit btn" onClick={() => props.toEdit(i, content)}>編集</button>
+            <button className="delete btn" onClick={() => props.toDelete(i)}>×</button>
+            </div>
+          </React.Fragment>
         ) : (
-          <div>
+          <React.Fragment>
             <input
               type="text"
               value={props.editTodo}
               onChange={(e) => props.onReChange(e)}
               onKeyPress={(e) => props.pushEnter(e, i)}
             />
-          </div>
+          </React.Fragment>
         )}
-        <button onClick={() => props.toDelete(i)}>×</button>
       </li>
     );
   });
   return (
     <React.Fragment>
-      <ul className="todo-list">{list}</ul>
+      <ul className="todo-display">{list}</ul>
       <Pagination
         todoList={props.todoList}
         pushNumber={(i: number) => props.pushNumber(i)}

@@ -13,21 +13,62 @@ ul,
 ol {
   list-style: none;
 }
-.todo-form {
-  @extend %flex-center;
+button {
+  
+  outline: none;
+  
 }
 .todo-list {
-    height:300px;
-  li {
+  max-width: 800px;
+  margin: auto;
+  padding: 30px 0;
+  background-color: #e3f6f5;
+
+  .todo-form {
     @extend %flex-center;
   }
-}
-li.none {
-  display: none;
-}
-.pagenation {
-  @extend %flex-center;
-  .pagenation-list {
-    display: flex;
+  .todo-display {
+    height: 300px;
+    li {
+      @extend %flex-center;
+      width: 600px;
+      height:50px;
+      margin: auto;
+      background-color: #e3f6f5;
+      border: 1px solid #272343;
+      padding: 10px;
+      .display-input {
+        width: 500px;
+        .date {
+          text-align: right;
+        }
+      }
+      .display-btn {
+        margin-left: 20px;
+        width: 100px;
+        .btn {
+          border:1px solid #272343;
+        }
+        .edit {
+          background-color: #ffd803;
+          width:50px;
+          height:30px;
+        }
+        .delete {
+          background-color: #bae8e8;
+          width:30px;
+          height:30px;
+        }
+      }
+    }
+  }
+  li.none {
+    display: none;
+  }
+  .pagenation {
+    @extend %flex-center;
+    .pagenation-list {
+      display: flex;
+    }
   }
 }
