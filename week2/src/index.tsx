@@ -29,13 +29,14 @@ type PaginationProps={
 const Pagination:React.FC<PaginationProps> = (props) => {
   const [CurrentIndex,setCurrentIndex]=useState(0)
   const [paginationLength,setPaginationLength]=useState<Array<number>>([1,2,3,4,5])
+  const [lastNumber,setLastNumber]=useState(paginationLength.slice(-1)[0])
   const amountPage=props.listCopy.length / 3;
-  
+  const paginationCopy=paginationLength.concat([lastNumber]);
   const ClickFirst=()=>{
     setCurrentIndex(1)
   }
   const ClickLast=()=>{
-    setCurrentIndex(paginationLength.length)
+    setCurrentIndex(Math.floor(amountPage))
   }
   const ClickPrevious=()=>{
     if (CurrentIndex===1){
@@ -44,14 +45,28 @@ const Pagination:React.FC<PaginationProps> = (props) => {
     setCurrentIndex(CurrentIndex-1)
     console.log(CurrentIndex)
   }
-  const ClickNext=()=>{
-    if (CurrentIndex>amountPage){
+  const ClickNext=()=>{    
+    if (CurrentIndex>(Math.floor(amountPage))){
       return;
     }
+    if(props.listCopy.length / 3 > lastNumber){
+      setLastNumber(lastNumber+1)
+      setPaginationLength(paginationCopy)
+      console.log(paginationCopy)
+    }
     setCurrentIndex(CurrentIndex+1)
-    console.log(props.listCopy.length)
   }
   const PaginationClick=(i:number)=>{
+    if (CurrentIndex>(Math.floor(amountPage))){
+      return;
+    }
+    if(props.listCopy.length / 3 > lastNumber){
+      setLastNumber(lastNumber+1)
+      setPaginationLength(paginationCopy)
+      console.log(paginationCopy)
+    }
+    if(paginationLength.length>(CurrentIndex/5)){
+    }
     setCurrentIndex(i+1)
     console.log(CurrentIndex)
   };
