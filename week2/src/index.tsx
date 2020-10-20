@@ -17,7 +17,7 @@ const Todo: React.FC = () => {
   const [current, setCurrent] = useState<number>(0);
 
   const getDate: Function = () => {
-    return new Promise(function (resolve, reject) {
+    
     const now = new Date();
     const year = now.getFullYear();
     const mon = now.getMonth() + 1;
@@ -25,9 +25,9 @@ const Todo: React.FC = () => {
     const hour = now.getHours();
     const min = now.getMinutes();
     const sec = now.getSeconds();
-    const nowDate=year + "/" + mon + "/" + day + " " + hour + ":" + min + ":" + sec;
-    resolve(nowDate)
-    })
+    const nowDate=`${year}/${mon}/${day} ${hour}:${min}:${sec}`;
+   return nowDate
+    
   };
   const toAdd: Function = (e: any) => {
     e.preventDefault();
@@ -35,10 +35,8 @@ const Todo: React.FC = () => {
       if (todoList.length > 99) {
         return;
       } else {
-        getDate().then(function (nowDate:string|number) {
-          console.log(nowDate)
-          setTodoList(todoList.concat([{todo:todo,date:nowDate}]));
-        });
+          setTodoList(todoList.concat([{todo:todo,date:getDate()}]));
+       
         for (var n = 1; n < 10; n++) {
           if (todoList.length === 10 * n) {
             setCurrent(current + 1);
@@ -65,12 +63,11 @@ const Todo: React.FC = () => {
   };
   const pushEnter: Function = (e: any, i: number) => {
     if (e.key === "Enter") {
-      getDate().then(function (nowDate:string|number) {
-        todoList.splice(i, 1, {todo:editTodo,date:nowDate});
+        todoList.splice(i, 1, {todo:editTodo,date:getDate()});
       const test = clone(todoList);
       setTodoList(test);
       setEditItem(-1);
-      })
+      
     }
   };
   const pushNumber: Function = (i: number) => {
