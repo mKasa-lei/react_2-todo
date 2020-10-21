@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 import { clone } from "lodash";
+import moment from 'moment'
 
 type Todo = Array<{
   todo: string;
@@ -17,14 +18,17 @@ const Todo: React.FC = () => {
   const [current, setCurrent] = useState<number>(0);
 
   const getDate: Function = () => {
-    const now = new Date();
+    const time = moment();
+    const nowDate = time.format("YYYY/MM/DD HH:mm:ss");
+   
+    /* const now = new Date();
     const year = now.getFullYear();
     const mon = now.getMonth() + 1;
     const day = now.getDate();
     const hour = now.getHours();
     const min = now.getMinutes();
     const sec = now.getSeconds();
-    const nowDate = `${year}/${mon}/${day} ${hour}:${min}:${sec}`;
+    const nowDate = `${year}/${mon}/${day} ${hour}:${min}:${sec}`; */
     return nowDate;
   };
   const toAdd: Function = (e: any) => {
