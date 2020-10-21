@@ -24,60 +24,63 @@ const Input:React.FC<InputProps> = (props) => {
 
 type PaginationProps={
   listCopy:Array<string>;
+  CurrentIndex:number
+  setCurrentIndex:React.Dispatch<React.SetStateAction<number>>
+  paginationLength:number[]
+  setPaginationLength:React.Dispatch<React.SetStateAction<number[]>>
+  lastNumber:number
+  setLastNumber:React.Dispatch<React.SetStateAction<number>>
 }
 
 const Pagination:React.FC<PaginationProps> = (props) => {
-  const [CurrentIndex,setCurrentIndex]=useState(0)
-  const [paginationLength,setPaginationLength]=useState<Array<number>>([1,2,3,4,5])
-  const [lastNumber,setLastNumber]=useState(paginationLength.slice(-1)[0])
   const amountPage=props.listCopy.length / 3;
-  const paginationCopy=paginationLength.concat([lastNumber]);
+  const paginationCopy=props.paginationLength.concat([props.lastNumber]);
   const ClickFirst=()=>{
-    setCurrentIndex(1)
+    props.setCurrentIndex(1)
   }
   const ClickLast=()=>{
-    setCurrentIndex(Math.floor(amountPage))
+    props.setCurrentIndex(Math.floor(amountPage))
   }
   const ClickPrevious=()=>{
-    if (CurrentIndex===1){
+    if (props.CurrentIndex===1){
       return;
     }
-    setCurrentIndex(CurrentIndex-1)
-    console.log(CurrentIndex)
+    props.setCurrentIndex(props.CurrentIndex-1)
+    console.log(props.CurrentIndex)
   }
   const ClickNext=()=>{    
-    if (CurrentIndex>(Math.floor(amountPage))){
+    if (props.CurrentIndex>(Math.floor(amountPage))){
       return;
     }
-    if(props.listCopy.length / 3 > lastNumber){
-      setLastNumber(lastNumber+1)
-      setPaginationLength(paginationCopy)
-      console.log(paginationCopy)
+    if(props.listCopy.length / 3 > props.lastNumber){
+      props.setLastNumber(props.lastNumber+1);
+      props.setPaginationLength(paginationCopy);
+      console.log(paginationCopy);
     }
-    setCurrentIndex(CurrentIndex+1)
+    props.setCurrentIndex(props.CurrentIndex+1);
   }
   const PaginationClick=(i:number)=>{
-    if (CurrentIndex>(Math.floor(amountPage))){
+    if (props.CurrentIndex>(Math.floor(amountPage))){
       return;
     }
-    if(props.listCopy.length / 3 > lastNumber){
-      setLastNumber(lastNumber+1)
-      setPaginationLength(paginationCopy)
-      console.log(paginationCopy)
+    if(i>=3 && i<=8){
+      console.log('aaa');
+      props.setPaginationLength([i-2,i-1,i,i+1,i+2]);
+    }else if(i===2){
+      props.setPaginationLength([1,2,3,4,5]);
     }
-    if(paginationLength.length>(CurrentIndex/5)){
-    }
-    setCurrentIndex(i+1)
-    console.log(CurrentIndex)
+    props.setCurrentIndex(i)
+    console.log(props.CurrentIndex)
   };
 
   const rendPagination=
-  paginationLength.map((value,index)=>(
-    <li key={index} className="Pagination chosen">
-      <a className={index===CurrentIndex-1 ? 'chosen':'unchosen'} href='#' onClick={()=>{PaginationClick(index)}}>
-        {index+1}
+  props.paginationLength.map((value,index)=>(
+    <li key={index} className="Pagination">
+      <a className={value===props.CurrentIndex ? 'chosen':'unchosen'} href='#' onClick={()=>{PaginationClick(value)}}>
+        {value}
       </a>
     </li>
+      
   ))
 
   return(
@@ -98,6 +101,12 @@ const Pagination:React.FC<PaginationProps> = (props) => {
 type ToDoListProps={
   text:string;
   list:Array<string>;
+  CurrentIndex:number
+  setCurrentIndex:React.Dispatch<React.SetStateAction<number>>
+  paginationLength:number[]
+  setPaginationLength:React.Dispatch<React.SetStateAction<number[]>>
+  lastNumber:number
+  setLastNumber:React.Dispatch<React.SetStateAction<number>>
   setText:React.Dispatch<React.SetStateAction<string>>
   changeTag:number;
   setChangeTag:React.Dispatch<React.SetStateAction<number>>
@@ -107,6 +116,13 @@ type ToDoListProps={
 }
 
 const TodoList:React.FC<ToDoListProps> = (props) => {
+  const CurrentIndex=props.CurrentIndex
+  const setCurrentIndex=props.setCurrentIndex
+  const paginationLength=props.paginationLength
+  const setPaginationLength=props.setPaginationLength
+  const lastNumber=props.lastNumber
+  const setLastNumber=props.setLastNumber
+
   const nowData = new Date();
 
   const Y = nowData.getFullYear()
@@ -121,9 +137,10 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
     if (event.keyCode === EnterKeyCode){
       props.setChangeTag(-1)
     }
-  }  
-
+  }
   const listCopy=props.list;
+
+  const limitedList=([1,2,3])
 
   const listMap=props.list.map((value,index)=>(
       props.changeTag !==index ? (
@@ -150,6 +167,12 @@ const TodoList:React.FC<ToDoListProps> = (props) => {
         <ul>{listMap}</ul>
         <Pagination
         listCopy={listCopy} 
+        CurrentIndex={CurrentIndex}
+        setCurrentIndex={setCurrentIndex}
+        paginationLength={paginationLength}
+        setPaginationLength={setPaginationLength}
+        lastNumber={lastNumber}
+        setLastNumber={setLastNumber}
         />
       </div>
     );
@@ -159,6 +182,10 @@ const Todo = () => {
   const [text,setText]=useState<string>("")
   const [list,setList]=useState<Array<string>>([]);
   const [changeTag,setChangeTag]=useState<number>(-1)
+  const [CurrentIndex,setCurrentIndex]=useState(0)
+  const [paginationLength,setPaginationLength]=useState<Array<number>>([1,2,3,4,5]);
+  const [lastNumber,setLastNumber]=useState(paginationLength.slice(-1)[0]);
+  const [CurrentPage,setCurrentPage]=useState(1)
   const concatList=()=>setList(list.concat(text))
   const deleteList=(i:number,index:string)=>setList(list.filter(i=>i!==index))
   const editList=()=>
@@ -184,6 +211,12 @@ const Todo = () => {
             list={list}
             setText={setText}
             setList={setList}
+            CurrentIndex={CurrentIndex}
+            setCurrentIndex={setCurrentIndex}
+            paginationLength={paginationLength}
+            setPaginationLength={setPaginationLength}
+            lastNumber={lastNumber}
+            setLastNumber={setLastNumber}
             deleteList={deleteList}
             changeTag={changeTag}
             setChangeTag={setChangeTag}
