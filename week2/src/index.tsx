@@ -27,7 +27,7 @@ type PaginationType = {
   current: number;
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
   paginationArray: Array<number>;
-  setPaginationArray: React.Dispatch<React.SetStateAction<number[]>>;
+  setPaginationArray: React.Dispatch<React.SetStateAction<Array<number>>>;
 };
 
 const Pagination: React.FC<PaginationType> = (props) => {
@@ -96,14 +96,23 @@ type ToDoListType = {
   setList: React.Dispatch<React.SetStateAction<Array<string>>>;
   current: number;
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
-  paginationArray: number[];
-  setPaginationArray: React.Dispatch<React.SetStateAction<number[]>>;
+  paginationArray: Array<number>;
+  setPaginationArray: React.Dispatch<React.SetStateAction<Array<number>>>;
   toEdit: number;
   setToEdit: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const TodoList: React.FC<ToDoListType> = (props) => {
-  const { current, setCurrent, paginationArray, setPaginationArray } = props;
+  const {
+    list,
+    setList,
+    current,
+    setCurrent,
+    paginationArray,
+    setPaginationArray,
+    toEdit,
+    setToEdit,
+  } = props;
 
   const nowData = new Date();
 
@@ -114,39 +123,38 @@ const TodoList: React.FC<ToDoListType> = (props) => {
   const m = ("00" + nowData.getMinutes()).slice(-2);
   const s = ("00" + nowData.getSeconds()).slice(-2);
 
-  const editTime = `${Y}/${M}/${D} ${h}:${m}:${s}`;
+  const time = `${Y}/${M}/${D} ${h}:${m}:${s}`;
 
-  const deleteList = (i: number, index: string) =>
-    props.setList(props.list.filter((i) => i !== index));
+  const deleteItem = (i: number, index: string) =>
+    setList(list.filter((i) => i !== index));
 
   const EnterKeyPress = (event: React.KeyboardEvent) => {
     const EnterKeyCode = 13;
     if (event.keyCode === EnterKeyCode) {
-      props.setToEdit(-1);
+      setToEdit(-1);
     }
   };
-  const list = props.list;
 
   const todoList = props.list.map((value, index) =>
-    props.toEdit !== index ? (
-      <li key={index}>
-        {value}
-        {editTime}
-        <a href="#" onClick={() => props.setToEdit(index)}>
-          編集
-        </a>
-        <a href="#" onClick={() => deleteList(index, value)}>
-          ×
-        </a>
-      </li>
-    ) : (
+    toEdit === index ? (
       <input
         onKeyDown={EnterKeyPress}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           list[index] = event.target.value;
-          props.setList(list);
+          setList(list);
         }}
       />
+    ) : (
+      <li key={index}>
+        {value}
+        {time}
+        <a href="#" onClick={() => setToEdit(index)}>
+          編集
+        </a>
+        <a href="#" onClick={() => deleteItem(index, value)}>
+          ×
+        </a>
+      </li>
     )
   );
   return (
@@ -179,7 +187,6 @@ const Todo = () => {
   return (
     <React.Fragment>
       <Input text={text} setText={setText} concatList={concatList} />
-
       <TodoList
         text={text}
         list={list}
