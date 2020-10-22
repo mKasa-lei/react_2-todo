@@ -23,7 +23,7 @@ const Input: React.FC<InputType> = (props) => {
 };
 
 type PaginationType = {
-  listCopy: Array<string>;
+  list: Array<string>;
   current: number;
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
   paginationArray: number[];
@@ -31,22 +31,22 @@ type PaginationType = {
 };
 
 const Pagination: React.FC<PaginationType> = (props) => {
-  const amountPage = props.listCopy.length / 3;
-  const ClickFirst = () => {
+  const amountPage = props.list.length / 3;
+  const clickFirst = () => {
     props.setCurrent(1);
   };
-  const ClickLast = () => {
+  const clickLast = () => {
     props.setCurrent(10);
   };
-  const ClickPrevious = () => {
+  const clickPrevious = () => {
     if (props.current === 1) return;
     props.setCurrent(props.current - 1);
   };
-  const ClickNext = () => {
+  const clickNext = () => {
     if (props.current > Math.floor(amountPage)) return;
     props.setCurrent(props.current + 1);
   };
-  const PaginationClick = (i: number) => {
+  const paginationClick = (i: number) => {
     if (i >= 3 && i <= 8) {
       props.setPaginationArray([i - 2, i - 1, i, i + 1, i + 2]);
     } else if (i === 2) {
@@ -61,7 +61,7 @@ const Pagination: React.FC<PaginationType> = (props) => {
         className={value === props.current ? "chosen" : "unchosen"}
         href="#"
         onClick={() => {
-          PaginationClick(value);
+          paginationClick(value);
         }}
       >
         {value}
@@ -71,17 +71,17 @@ const Pagination: React.FC<PaginationType> = (props) => {
 
   return (
     <div>
-      <a href="#" onClick={() => ClickFirst()}>
+      <a href="#" onClick={() => clickFirst()}>
         first
       </a>
-      <a href="#" onClick={() => ClickPrevious()}>
+      <a href="#" onClick={() => clickPrevious()}>
         ＜
       </a>
       {rendPagination}
-      <a href="#" onClick={() => ClickNext()}>
+      <a href="#" onClick={() => clickNext()}>
         ＞
       </a>
-      <a href="#" onClick={() => ClickLast()}>
+      <a href="#" onClick={() => clickLast()}>
         last
       </a>
     </div>
@@ -102,8 +102,7 @@ type ToDoListType = {
 };
 
 const TodoList: React.FC<ToDoListType> = (props) => {
-  const { current, setCurrent } = props;
-  const { paginationArray, setPaginationArray } = props;
+  const { current, setCurrent, paginationArray, setPaginationArray } = props;
 
   const nowData = new Date();
 
@@ -125,7 +124,7 @@ const TodoList: React.FC<ToDoListType> = (props) => {
       props.setToEdit(-1);
     }
   };
-  const listCopy = props.list;
+  const list = props.list;
 
   const listMap = props.list.map((value, index) =>
     props.toEdit !== index ? (
@@ -143,8 +142,8 @@ const TodoList: React.FC<ToDoListType> = (props) => {
       <input
         onKeyDown={keyPress}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          listCopy[index] = event.target.value;
-          props.setList(listCopy);
+          list[index] = event.target.value;
+          props.setList(list);
         }}
       />
     )
@@ -153,7 +152,7 @@ const TodoList: React.FC<ToDoListType> = (props) => {
     <div>
       <ul>{listMap}</ul>
       <Pagination
-        listCopy={listCopy}
+        list={list}
         current={current}
         setCurrent={setCurrent}
         paginationArray={paginationArray}
