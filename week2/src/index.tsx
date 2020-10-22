@@ -4,7 +4,7 @@ import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 
 type InputType = {
-  value: string;
+  text: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
   concatList: (i: string) => void;
 };
@@ -17,48 +17,48 @@ const Input: React.FC<InputType> = (props) => {
           props.setText(event.target.value);
         }}
       />
-      <button onClick={() => props.concatList(props.value)}>Add</button>
+      <button onClick={() => props.concatList(props.text)}>Add</button>
     </div>
   );
 };
 
 type PaginationType = {
   listCopy: Array<string>;
-  currentIndex: number;
-  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
-  paginationLength: number[];
-  setPaginationLength: React.Dispatch<React.SetStateAction<number[]>>;
+  current: number;
+  setCurrent: React.Dispatch<React.SetStateAction<number>>;
+  paginationArray: number[];
+  setPaginationArray: React.Dispatch<React.SetStateAction<number[]>>;
 };
 
 const Pagination: React.FC<PaginationType> = (props) => {
   const amountPage = props.listCopy.length / 3;
   const ClickFirst = () => {
-    props.setCurrentIndex(1);
+    props.setCurrent(1);
   };
   const ClickLast = () => {
-    props.setCurrentIndex(10);
+    props.setCurrent(10);
   };
   const ClickPrevious = () => {
-    if (props.currentIndex === 1) return;
-    props.setCurrentIndex(props.currentIndex - 1);
+    if (props.current === 1) return;
+    props.setCurrent(props.current - 1);
   };
   const ClickNext = () => {
-    if (props.currentIndex > Math.floor(amountPage)) return;
-    props.setCurrentIndex(props.currentIndex + 1);
+    if (props.current > Math.floor(amountPage)) return;
+    props.setCurrent(props.current + 1);
   };
   const PaginationClick = (i: number) => {
     if (i >= 3 && i <= 8) {
-      props.setPaginationLength([i - 2, i - 1, i, i + 1, i + 2]);
+      props.setPaginationArray([i - 2, i - 1, i, i + 1, i + 2]);
     } else if (i === 2) {
-      props.setPaginationLength([1, 2, 3, 4, 5]);
+      props.setPaginationArray([1, 2, 3, 4, 5]);
     }
-    props.setCurrentIndex(i);
+    props.setCurrent(i);
   };
 
-  const rendPagination = props.paginationLength.map((value, index) => (
+  const rendPagination = props.paginationArray.map((value, index) => (
     <li key={index} className="Pagination">
       <a
-        className={value === props.currentIndex ? "chosen" : "unchosen"}
+        className={value === props.current ? "chosen" : "unchosen"}
         href="#"
         onClick={() => {
           PaginationClick(value);
@@ -93,17 +93,17 @@ type ToDoListType = {
   list: Array<string>;
   setText: React.Dispatch<React.SetStateAction<string>>;
   setList: React.Dispatch<React.SetStateAction<Array<string>>>;
-  currentIndex: number;
-  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
-  paginationLength: number[];
-  setPaginationLength: React.Dispatch<React.SetStateAction<number[]>>;
-  changeTag: number;
-  setChangeTag: React.Dispatch<React.SetStateAction<number>>;
+  current: number;
+  setCurrent: React.Dispatch<React.SetStateAction<number>>;
+  paginationArray: number[];
+  setPaginationArray: React.Dispatch<React.SetStateAction<number[]>>;
+  toEdit: number;
+  setToEdit: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const TodoList: React.FC<ToDoListType> = (props) => {
-  const { currentIndex, setCurrentIndex } = props;
-  const { paginationLength, setPaginationLength } = props;
+  const { current, setCurrent } = props;
+  const { paginationArray, setPaginationArray } = props;
 
   const nowData = new Date();
 
@@ -122,23 +122,21 @@ const TodoList: React.FC<ToDoListType> = (props) => {
   const keyPress = (event: React.KeyboardEvent) => {
     const EnterKeyCode = 13;
     if (event.keyCode === EnterKeyCode) {
-      props.setChangeTag(-1);
+      props.setToEdit(-1);
     }
   };
   const listCopy = props.list;
 
-  const limitedList = [1, 2, 3];
-
   const listMap = props.list.map((value, index) =>
-    props.changeTag !== index ? (
+    props.toEdit !== index ? (
       <li key={index}>
         {value}
         {currentTime}
-        <a href="#" onClick={() => props.setChangeTag(index)}>
+        <a href="#" onClick={() => props.setToEdit(index)}>
           編集
         </a>
         <a href="#" onClick={() => deleteList(index, value)}>
-          消去
+          ×
         </a>
       </li>
     ) : (
@@ -156,10 +154,10 @@ const TodoList: React.FC<ToDoListType> = (props) => {
       <ul>{listMap}</ul>
       <Pagination
         listCopy={listCopy}
-        currentIndex={currentIndex}
-        setCurrentIndex={setCurrentIndex}
-        paginationLength={paginationLength}
-        setPaginationLength={setPaginationLength}
+        current={current}
+        setCurrent={setCurrent}
+        paginationArray={paginationArray}
+        setPaginationArray={setPaginationArray}
       />
     </div>
   );
@@ -167,33 +165,32 @@ const TodoList: React.FC<ToDoListType> = (props) => {
 const Todo = () => {
   const [text, setText] = useState<string>("");
   const [list, setList] = useState<Array<string>>([]);
-  const [changeTag, setChangeTag] = useState<number>(-1);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [paginationLength, setPaginationLength] = useState<Array<number>>([
+  const [toEdit, setToEdit] = useState<number>(-1);
+  const [current, setCurrent] = useState(0);
+  const [paginationArray, setPaginationArray] = useState<Array<number>>([
     1,
     2,
     3,
     4,
     5,
   ]);
-  const [CurrentPage, setCurrentPage] = useState(1);
   const concatList = () => setList(list.concat(text));
 
   return (
     <React.Fragment>
-      <Input value={text} setText={setText} concatList={concatList} />
+      <Input text={text} setText={setText} concatList={concatList} />
 
       <TodoList
         text={text}
         list={list}
         setText={setText}
         setList={setList}
-        currentIndex={currentIndex}
-        setCurrentIndex={setCurrentIndex}
-        paginationLength={paginationLength}
-        setPaginationLength={setPaginationLength}
-        changeTag={changeTag}
-        setChangeTag={setChangeTag}
+        current={current}
+        setCurrent={setCurrent}
+        paginationArray={paginationArray}
+        setPaginationArray={setPaginationArray}
+        toEdit={toEdit}
+        setToEdit={setToEdit}
       />
     </React.Fragment>
   );
