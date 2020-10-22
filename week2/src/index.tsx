@@ -31,8 +31,14 @@ type PaginationType = {
 };
 
 const Pagination: React.FC<PaginationType> = (props) => {
-  const amountPage = props.list.length / 3;
-  const { current, setCurrent, paginationArray, setPaginationArray } = props;
+  const {
+    list,
+    current,
+    setCurrent,
+    paginationArray,
+    setPaginationArray,
+  } = props;
+  const amountPage = list.length / 3;
   const clickFirst = () => {
     setCurrent(1);
   };
@@ -40,12 +46,12 @@ const Pagination: React.FC<PaginationType> = (props) => {
     setCurrent(10);
   };
   const clickPrevious = () => {
-    if (props.current === 1) return;
-    setCurrent(props.current - 1);
+    if (current === 1) return;
+    setCurrent(current - 1);
   };
   const clickNext = () => {
     if (current > Math.floor(amountPage)) return;
-    setCurrent(props.current + 1);
+    setCurrent(current + 1);
   };
   const clickNumber = (i: number) => {
     if (i >= 3 && i <= 8) {
@@ -59,7 +65,7 @@ const Pagination: React.FC<PaginationType> = (props) => {
   const paginationNumber = paginationArray.map((value, index) => (
     <li key={index} className="Pagination">
       <a
-        className={value === props.current ? "chosen" : "unchosen"}
+        className={value === current ? "chosen" : "unchosen"}
         href="#"
         onClick={() => {
           clickNumber(value);
@@ -135,7 +141,7 @@ const TodoList: React.FC<ToDoListType> = (props) => {
     }
   };
 
-  const todoList = props.list.map((value, index) =>
+  const todoList = list.map((value, index) =>
     toEdit === index ? (
       <input
         onKeyDown={EnterKeyPress}
