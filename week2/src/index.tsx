@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./style.scss";
 import * as serviceWorker from "./serviceWorker";
 import { clone } from "lodash";
-import moment from 'moment'
+import moment from "moment";
 
 type Todo = Array<{
   todo: string;
@@ -20,7 +20,7 @@ const Todo: React.FC = () => {
   const getDate: Function = () => {
     const time = moment();
     const nowDate = time.format("YYYY/MM/DD HH:mm:ss");
-   
+
     /* const now = new Date();
     const year = now.getFullYear();
     const mon = now.getMonth() + 1;
@@ -29,6 +29,7 @@ const Todo: React.FC = () => {
     const min = now.getMinutes();
     const sec = now.getSeconds();
     const nowDate = `${year}/${mon}/${day} ${hour}:${min}:${sec}`; */
+
     return nowDate;
   };
   const toAdd: Function = (e: any) => {
@@ -117,11 +118,12 @@ const Input: React.FC<PropsInput> = (props) => {
   return (
     <form className="todo-form" onSubmit={(e) => props.toAdd(e)}>
       <input
+        className="add-input"
         type="text"
         value={props.todo}
         onChange={(e) => props.onChange(e)}
       />
-      <input type="submit" value="追加" />
+      <input className="add-btn" type="submit" value="追加" />
     </form>
   );
 };
@@ -146,27 +148,32 @@ const TodoList: React.FC<PropsTodoList> = (props) => {
         key={i}
         className={props.current === Math.floor(i / 10) ? "active" : "none"}
       >
-        {props.editItem !== i ? (
-          <React.Fragment>
-            <div className="display-input">
-            <div className="todo">{content.todo}</div>
-            <div className="date">{content.date}</div>
-            </div>
-            <div className="display-btn">
-            <button className="edit btn" onClick={() => props.toEdit(i, content)}>編集</button>
-            <button className="delete btn" onClick={() => props.toDelete(i)}>×</button>
-            </div>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <input
-              type="text"
-              value={props.editTodo}
-              onChange={(e) => props.onReChange(e)}
-              onKeyPress={(e) => props.pushEnter(e, i)}
-            />
-          </React.Fragment>
-        )}
+        <div className="display-input">
+          {props.editItem !== i ? (
+            <React.Fragment>
+              <div className="todo">{content.todo}</div>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <input
+                className="edit-input"
+                type="text"
+                value={props.editTodo}
+                onChange={(e) => props.onReChange(e)}
+                onKeyPress={(e) => props.pushEnter(e, i)}
+              />
+            </React.Fragment>
+          )}
+          <div className="date">{content.date}</div>
+        </div>
+        <div className="display-btn">
+          <button className="edit btn" onClick={() => props.toEdit(i, content)}>
+            編集
+          </button>
+          <button className="delete btn" onClick={() => props.toDelete(i)}>
+            ×
+          </button>
+        </div>
       </li>
     );
   });
@@ -211,18 +218,18 @@ const Pagination: React.FC<PropsPagination> = (props) => {
         props.current - 5 < i &&
         !props.todoList[(props.current + 1) * 10]
       )
-        return "active";
+        return "pagenation-item";
       else if (props.current < 2) {
-        if (i < 5) return "active";
+        if (i < 5) return "pagenation-item";
         else return "none";
       } else if (props.current > 7) {
-        if (i > 4) return "active";
+        if (i > 4) return "pagenation-item";
         else return "none";
       } else {
         return "none";
       }
     } else {
-      return "active";
+      return "pagenation-item";
     }
   };
 
@@ -239,9 +246,16 @@ const Pagination: React.FC<PropsPagination> = (props) => {
   });
   return (
     <div className="pagenation">
-      <span onClick={() => props.pushPrev()}>&lt;</span>
+      <span
+        className="pagenation-prev pagenation-item"
+        onClick={() => props.pushPrev()}
+      >
+        &lt;
+      </span>
       <ol className="pagenation-list">{list}</ol>
-      <span onClick={() => props.pushNext()}>&gt;</span>
+      <span className="pagenation-item" onClick={() => props.pushNext()}>
+        &gt;
+      </span>
     </div>
   );
 };

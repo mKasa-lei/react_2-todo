@@ -3,72 +3,115 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  color: #001e1d;
 }
 %flex-center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+$todo-itemh: 42px;
+$todo-itemmt: 10px;
+$border: 1px solid #001e1d;
+
 ul,
 ol {
   list-style: none;
 }
-button {
-  
+button,
+input {
   outline: none;
-  
 }
-.todo-list {
-  max-width: 800px;
-  margin: auto;
-  padding: 30px 0;
-  background-color: #e3f6f5;
-
-  .todo-form {
-    @extend %flex-center;
-  }
-  .todo-display {
-    height: 300px;
-    li {
+.page {
+  background-color: #abd1c6;
+  height: 640px;
+  .todo-list {
+    max-width: 650px;
+    width: 94%;
+    margin: auto;
+    padding: 30px 0;
+    .todo-form {
       @extend %flex-center;
-      width: 600px;
-      height:50px;
-      margin: auto;
-      background-color: #e3f6f5;
-      border: 1px solid #272343;
-      padding: 10px;
-      .display-input {
-        width: 500px;
-        .date {
-          text-align: right;
-        }
+      .add-input {
+        height: 30px;
+        width: 60%;
+        max-width: 400px;
+        border: $border;
+        padding: 0 8px;
+        background-color: #fffffe;
       }
-      .display-btn {
-        margin-left: 20px;
-        width: 100px;
-        .btn {
-          border:1px solid #272343;
+      .add-btn {
+        background-color: #0f3433;
+        border: $border;
+        color: #fffffe;
+        width: 50px;
+        height: 30px;
+      }
+    }
+    .todo-display {
+      height: calc(#{$todo-itemh}* 10 + #{$todo-itemmt}* 10);
+      li {
+        @extend %flex-center;
+        width: 100%;
+        height: $todo-itemh;
+        margin: #{$todo-itemmt} auto 0;
+        background-color: #e3f6f5;
+        border: $border;
+        padding: 10px;
+        line-height: 1;
+        .display-input {
+          width: calc(100% - 90px);
+          .edit-input {
+            border: $border;
+            width: 100%;
+            padding: 0 8px;
+            background-color: #fffffe;
+          }
+          .date {
+            text-align: right;
+          }
         }
-        .edit {
-          background-color: #ffd803;
-          width:50px;
-          height:30px;
-        }
-        .delete {
-          background-color: #bae8e8;
-          width:30px;
-          height:30px;
+        .display-btn {
+          margin-left: 5%;
+          width: 90px;
+          .btn {
+            border: $border;
+          }
+          .edit {
+            background-color: #f9bc60;
+            width: 50px;
+            height: 30px;
+          }
+          .delete {
+            background-color: #e16162;
+            width: 30px;
+            height: 30px;
+            margin-left: 5px;
+          }
         }
       }
     }
-  }
-  li.none {
-    display: none;
-  }
-  .pagenation {
-    @extend %flex-center;
-    .pagenation-list {
-      display: flex;
+    li.none {
+      display: none;
+    }
+    .pagenation {
+      @extend %flex-center;
+
+      .pagenation-list {
+        display: flex;
+      }
+      .pagenation-item {
+        @extend %flex-center;
+        width: 30px;
+        height: 30px;
+        border: $border;
+        border-left: none;
+        background: #e3f6f5;
+      }
+      .pagenation-prev {
+        border: $border;
+      }
     }
   }
 }
