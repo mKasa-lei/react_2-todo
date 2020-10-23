@@ -5,8 +5,9 @@ import * as serviceWorker from "./serviceWorker";
 
 type InputType = {
   text: string;
+  time: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
-  concatList: (i: string) => void;
+  concatList: () => void;
 };
 const Input: React.FC<InputType> = (props) => {
   return (
@@ -17,7 +18,7 @@ const Input: React.FC<InputType> = (props) => {
           props.setText(event.target.value);
         }}
       />
-      <button onClick={() => props.concatList(props.text)}>Add</button>
+      <button onClick={() => props.concatList()}>Add</button>
     </div>
   );
 };
@@ -144,10 +145,12 @@ const TodoList: React.FC<ToDoListType> = (props) => {
       />
     ) : (
       <li key={index}>
+        {list[index].textValue}
+        {list[index].time}
+
         <a href="#" onClick={() => setToEdit(index)}>
           編集
         </a>
-        {list}
         <a href="#" onClick={() => deleteItem(list[index].textValue)}>
           ×
         </a>
@@ -198,12 +201,17 @@ const Todo = () => {
   const time = `${Y}/${M}/${D} ${h}:${m}:${s}`;
 
   const concatList = () => {
-    setList(list.concat([{ textValue: text, time: time }]));
+    setList(list.concat({ textValue: text, time: time }));
   };
 
   return (
     <React.Fragment>
-      <Input text={text} setText={setText} concatList={concatList} />
+      <Input
+        text={text}
+        setText={setText}
+        concatList={concatList}
+        time={time}
+      />
       <TodoList
         text={text}
         list={list}
