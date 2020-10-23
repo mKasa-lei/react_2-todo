@@ -212,7 +212,7 @@ const Pagination: React.FC<PropsPagination> = (props) => {
         props.todoList[(props.current - 2) * 10] &&
         props.todoList[(props.current + 2) * 10]
       ) {
-        if (i > props.current - 3 && i < props.current + 3) return "active";
+        if (i > props.current - 3 && i < props.current + 3) return "pagenation-item";
         else return "none";
       } else if (
         props.current - 5 < i &&
