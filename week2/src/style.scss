@@ -48,6 +48,9 @@ input {
         width: 50px;
         height: 30px;
       }
+      .add-btn:hover{
+        opacity:0.7;
+      }
     }
     .todo-display {
       height: calc(#{$todo-itemh}* 10 + #{$todo-itemmt}* 10);
@@ -77,6 +80,9 @@ input {
           width: 90px;
           .btn {
             border: $border;
+          }
+          .btn:hover{
+            opacity:0.7;
           }
           .edit {
             background-color: #f9bc60;
