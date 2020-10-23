@@ -35,15 +35,19 @@ const Todo: React.FC = () => {
   const toAdd: Function = (e: any) => {
     e.preventDefault();
     if (todo) {
-      if (todoList.length > 99) {
-        return;
-      } else {
-        setTodoList(todoList.concat([{ todo: todo, date: getDate() }]));
-        for (var n = 1; n < 10; n++) {
-          if (todoList.length === 10 * n) {
-            setCurrent(current + 1);
+      if (todo.length <= 20) {
+        if (todoList.length > 99) {
+          return;
+        } else {
+          setTodoList(todoList.concat([{ todo: todo, date: getDate() }]));
+          for (var n = 1; n < 10; n++) {
+            if (todoList.length === 10 * n) {
+              setCurrent(current + 1);
+            }
           }
         }
+      } else {
+        return;
       }
     }
   };
@@ -70,10 +74,14 @@ const Todo: React.FC = () => {
   };
   const pushEnter: Function = (e: any, i: number) => {
     if (e.key === "Enter") {
-      todoList.splice(i, 1, { todo: editTodo, date: getDate() });
-      const test = clone(todoList);
-      setTodoList(test);
-      setEditItem(-1);
+      if (editTodo.length <= 20) {
+        todoList.splice(i, 1, { todo: editTodo, date: getDate() });
+        const test = clone(todoList);
+        setTodoList(test);
+        setEditItem(-1);
+      } else {
+        return;
+      }
     }
   };
   const pushNumber: Function = (i: number) => {
@@ -207,7 +215,7 @@ const Pagination: React.FC<PropsPagination> = (props) => {
       : Array(paginations).fill(null);
 
   const displayList = (i: number) => {
-    if (props.current == i) {
+    if (props.current === i) {
       return "pagenation-item active";
     } else if (paginations > 5) {
       if (
