@@ -23,7 +23,7 @@ const Input: React.FC<InputType> = (props) => {
 };
 
 type PaginationType = {
-  list: Array<string>;
+  list: listType;
   current: number;
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
   paginationArray: Array<number>;
@@ -97,9 +97,10 @@ const Pagination: React.FC<PaginationType> = (props) => {
 
 type ToDoListType = {
   text: string;
-  list: Array<string>;
+  list: listType;
+  time: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
-  setList: React.Dispatch<React.SetStateAction<Array<string>>>;
+  setList: React.Dispatch<React.SetStateAction<listType>>;
   current: number;
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
   paginationArray: Array<number>;
@@ -110,6 +111,8 @@ type ToDoListType = {
 
 const TodoList: React.FC<ToDoListType> = (props) => {
   const {
+    text,
+    time,
     list,
     setList,
     current,
@@ -120,19 +123,8 @@ const TodoList: React.FC<ToDoListType> = (props) => {
     setToEdit,
   } = props;
 
-  const nowData = new Date();
-
-  const Y = nowData.getFullYear();
-  const M = ("00" + (nowData.getMonth() + 1)).slice(-2);
-  const D = ("00" + nowData.getDate()).slice(-2);
-  const h = ("00" + nowData.getHours()).slice(-2);
-  const m = ("00" + nowData.getMinutes()).slice(-2);
-  const s = ("00" + nowData.getSeconds()).slice(-2);
-
-  const time = `${Y}/${M}/${D} ${h}:${m}:${s}`;
-
-  const deleteItem = (i: number, index: string) =>
-    setList(list.filter((i) => i !== index));
+  const deleteItem = (index: string) =>
+    setList(list.filter((i) => i.textValue !== index));
 
   const EnterKeyPress = (event: React.KeyboardEvent) => {
     const EnterKeyCode = 13;
@@ -146,18 +138,17 @@ const TodoList: React.FC<ToDoListType> = (props) => {
       <input
         onKeyDown={EnterKeyPress}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          list[index] = event.target.value;
+          list[index].textValue = event.target.value;
           setList(list);
         }}
       />
     ) : (
       <li key={index}>
-        {value}
-        {time}
         <a href="#" onClick={() => setToEdit(index)}>
           編集
         </a>
-        <a href="#" onClick={() => deleteItem(index, value)}>
+        {list}
+        <a href="#" onClick={() => deleteItem(list[index].textValue)}>
           ×
         </a>
       </li>
@@ -176,9 +167,15 @@ const TodoList: React.FC<ToDoListType> = (props) => {
     </div>
   );
 };
+
+type listType = Array<{
+  textValue: string;
+  time?: string;
+}>;
+
 const Todo = () => {
   const [text, setText] = useState<string>("");
-  const [list, setList] = useState<Array<string>>([]);
+  const [list, setList] = useState<listType>([]);
   const [toEdit, setToEdit] = useState<number>(-1);
   const [current, setCurrent] = useState(0);
   const [paginationArray, setPaginationArray] = useState<Array<number>>([
@@ -188,7 +185,21 @@ const Todo = () => {
     4,
     5,
   ]);
-  const concatList = () => setList(list.concat(text));
+
+  const nowData = new Date();
+
+  const Y = nowData.getFullYear();
+  const M = ("00" + (nowData.getMonth() + 1)).slice(-2);
+  const D = ("00" + nowData.getDate()).slice(-2);
+  const h = ("00" + nowData.getHours()).slice(-2);
+  const m = ("00" + nowData.getMinutes()).slice(-2);
+  const s = ("00" + nowData.getSeconds()).slice(-2);
+
+  const time = `${Y}/${M}/${D} ${h}:${m}:${s}`;
+
+  const concatList = () => {
+    setList(list.concat([{ textValue: text, time: time }]));
+  };
 
   return (
     <React.Fragment>
@@ -196,6 +207,7 @@ const Todo = () => {
       <TodoList
         text={text}
         list={list}
+        time={time}
         setText={setText}
         setList={setList}
         current={current}
