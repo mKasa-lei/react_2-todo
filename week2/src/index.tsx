@@ -39,19 +39,48 @@ const Pagination: React.FC<PaginationType> = (props) => {
     paginationArray,
     setPaginationArray,
   } = props;
-  const amountPage = list.length / 3;
+  const amountPage = list.length;
   const clickFirst = () => {
     setCurrent(1);
+    setPaginationArray([1, 2, 3, 4, 5]);
   };
   const clickLast = () => {
     setCurrent(10);
+    setPaginationArray([6, 7, 8, 9, 10]);
   };
   const clickPrevious = () => {
     if (current === 1) return;
+
+    if (current >= 4 && current <= 11) {
+      setPaginationArray([
+        current - 3,
+        current - 2,
+        current - 1,
+        current - 0,
+        current + 1,
+      ]);
+    } else if (current >= 3) {
+      setPaginationArray([1, 2, 3, 4, 5]);
+    }
+    if (current === 9) {
+      setPaginationArray([6, 7, 8, 9, 10]);
+    }
     setCurrent(current - 1);
+    console.log(current);
   };
   const clickNext = () => {
     if (current > Math.floor(amountPage)) return;
+    if (current >= 2 && current <= 7) {
+      setPaginationArray([
+        current - 1,
+        current - 0,
+        current + 1,
+        current + 2,
+        current + 3,
+      ]);
+    } else if (current === 3) {
+      setPaginationArray([1, 2, 3, 4, 5]);
+    }
     setCurrent(current + 1);
   };
   const clickNumber = (i: number) => {
@@ -143,7 +172,7 @@ const TodoList: React.FC<ToDoListType> = (props) => {
           setList(list);
         }}
       />
-    ) : (
+    ) : current === index ? (
       <li key={index}>
         {list[index].textValue}
         {list[index].time}
@@ -155,6 +184,8 @@ const TodoList: React.FC<ToDoListType> = (props) => {
           ×
         </a>
       </li>
+    ) : (
+      ""
     )
   );
   return (
@@ -180,7 +211,7 @@ const Todo = () => {
   const [text, setText] = useState<string>("");
   const [list, setList] = useState<listType>([]);
   const [toEdit, setToEdit] = useState<number>(-1);
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(1);
   const [paginationArray, setPaginationArray] = useState<Array<number>>([
     1,
     2,
