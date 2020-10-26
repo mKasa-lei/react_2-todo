@@ -40,9 +40,12 @@ const Todo: React.FC = () => {
           return;
         } else {
           setTodoList(todoList.concat([{ todo: todo, date: getDate() }]));
+         
           for (var n = 1; n < 10; n++) {
             if (todoList.length === 10 * n) {
               setCurrent(current + 1);
+            }else{
+              setCurrent(Math.floor((todoList.length) / 10));
             }
           }
         }
