@@ -88,10 +88,18 @@ const Todo: React.FC = () => {
     setCurrent(i);
   };
   const pushPrev: Function = () => {
-    setCurrent(current - 1);
+    if (current !== 0) {
+      setCurrent(current - 1);
+    } else {
+      return;
+    }
   };
   const pushNext: Function = () => {
-    setCurrent(current + 1);
+    if (current < Math.floor((todoList.length - 1) / 10)) {
+      setCurrent(current + 1);
+    } else {
+      return;
+    }
   };
 
   return (
