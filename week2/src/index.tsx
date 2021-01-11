@@ -62,7 +62,7 @@ const Pagination: React.FC<PaginationType> = (props) => {
     } else if (current >= 3) {
       setPaginationArray([1, 2, 3, 4, 5]);
     }
-    if (current === 9) {
+    if (current === 10) {
       setPaginationArray([6, 7, 8, 9, 10]);
     }
     setCurrent(current - 1);
@@ -80,6 +80,9 @@ const Pagination: React.FC<PaginationType> = (props) => {
       ]);
     } else if (current === 3) {
       setPaginationArray([1, 2, 3, 4, 5]);
+    }
+    if (current === 10) {
+      return;
     }
     setCurrent(current + 1);
   };
@@ -172,11 +175,10 @@ const TodoList: React.FC<ToDoListType> = (props) => {
           setList(list);
         }}
       />
-    ) : current === index ? (
+    ) : current <= list.length ? (
       <li key={index}>
         {list[index].textValue}
         {list[index].time}
-
         <a href="#" onClick={() => setToEdit(index)}>
           編集
         </a>
